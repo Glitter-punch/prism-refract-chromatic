@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Prism">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Prism</title>
+<style>
+  :root{
+    --ink:#1f1b16; --ink-soft:#5a5248; --paper:#faf7f1; --card:#ffffff;
+    --parchment:#f6efe2; --parchment-edge:#e2d5b8;
+    --accent:#6d5cae; --accent2:#b8895a; --rule:#e8e1d5; --good:#2d7a4f;
+    --r1:#e05252;--r2:#e0a052;--r3:#d9c94a;--r4:#5cb85c;--r5:#5285e0;--r6:#8a52e0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--paper);color:var(--ink);font:17px/1.7 Georgia,'Iowan Old Style',serif;
+       padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+  .sans{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif}
+  header.top{padding:18px 18px 0;max-width:720px;margin:0 auto}
+  .brand h1{font-size:26px;font-weight:normal;color:var(--ink);display:inline}
+  .brand .tag{color:var(--ink-soft);font-style:italic;font-size:12.5px;margin-left:8px}
+  .spectrum-bar{height:3px;background:linear-gradient(90deg,var(--r1),var(--r2),var(--r3),var(--r4),var(--r5),var(--r6));border-radius:2px;margin:10px 0 0;opacity:.85}
+  main{max-width:720px;margin:0 auto;padding:16px 18px 90px}
+  h2.week-theme{font-size:24px;font-weight:normal;margin-bottom:2px}
+  .muted{color:var(--ink-soft)} .small{font-size:13px}
+  .vein-badge,.badge{display:inline-block;font-family:-apple-system,Arial,sans-serif;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;padding:3px 9px;border-radius:999px;vertical-align:middle}
+  .vein-badge{background:var(--accent);color:#fff}
+  .badge.ai{background:#eef0f6;color:#4a5578;border:1px solid #d5dae8}
+  .badge.sourced{background:#f3e9d3;color:#7a5b21;border:1px solid var(--parchment-edge)}
+  .badge.type{background:#f4f1ea;color:var(--ink-soft);border:1px solid var(--rule)}
+  .framing{font-style:italic;color:var(--ink-soft);margin:12px 0 18px}
+  .day-strip{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;margin-bottom:20px;-webkit-overflow-scrolling:touch}
+  .day-strip button{font-family:inherit;border:1px solid var(--rule);background:#fbf9f4;padding:8px 13px;border-radius:8px;font-size:14px;color:var(--ink-soft);white-space:nowrap;flex:0 0 auto}
+  .day-strip button.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .day-strip button.today{box-shadow:0 0 0 2px var(--accent)}
+  .section-label{font-family:-apple-system,Arial,sans-serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin:30px 0 10px;display:flex;align-items:center;gap:10px}
+  .section-label::after{content:"";flex:1;height:1px;background:var(--rule)}
+  .spark{font-size:20px;line-height:1.5;font-style:italic;margin:6px 0}
+  .depth-item{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;margin-bottom:14px;background:var(--card)}
+  .depth-item h3{font-size:18px;font-weight:normal;margin:6px 0 8px}
+  .body p{margin:0 0 12px} .body ul,.body ol{margin:0 0 12px 20px} .body h4{margin:14px 0 6px}
+  .body blockquote{border-left:3px solid var(--rule);padding-left:12px;color:var(--ink-soft);margin:0 0 12px}
+  .quoted{background:var(--parchment);border:1px solid var(--parchment-edge);border-left:5px solid var(--accent2);border-radius:10px;padding:18px 20px;margin-bottom:14px}
+  .quoted .qtext{font-size:18px;line-height:1.6;white-space:pre-line;font-style:italic;margin:8px 0 12px}
+  .quoted .attr{font-family:-apple-system,Arial,sans-serif;font-size:12.5px;color:#7a5b21}
+  .quoted .attr .who{font-weight:600}
+  .quoted .src{font-size:11.5px;color:#a08a5f;margin-top:2px;font-family:-apple-system,Arial,sans-serif}
+  .refraction{border-left:4px solid;border-image:linear-gradient(180deg,var(--r1),var(--r5)) 1;padding:2px 0 2px 16px}
+  .lens-badge{background:linear-gradient(90deg,#6d5cae,#5285e0);color:#fff}
+  .activity{background:#f2f6f2;border:1px solid #d8e4d8;border-radius:10px;padding:18px 20px}
+  .activity .mode{background:var(--good);color:#fff}
+  .activity .prompt{margin-top:10px;font-size:16.5px}
+  .pill-note{font-size:11.5px;font-family:-apple-system,Arial,sans-serif;color:var(--ink-soft);margin-top:6px}
+  .act-response{margin-top:16px;border-top:1px dashed #c9dcc9;padding-top:12px}
+  .act-response textarea{width:100%;min-height:150px;font:16px/1.6 Georgia,serif;padding:12px;border:1px solid #c9dcc9;border-radius:8px;background:#fffdf8}
+  .bar{display:flex;gap:10px;align-items:center;margin-top:8px;flex-wrap:wrap}
+  .btn{font-family:-apple-system,Arial,sans-serif;font-size:14px;padding:10px 16px;border-radius:8px;border:1px solid var(--rule);background:#fff;color:var(--ink)}
+  .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+  .stat{font-family:-apple-system,Arial,sans-serif;font-size:12px;color:var(--ink-soft)}
+  .notes{margin-top:34px;border-top:1px dashed var(--rule);padding-top:16px}
+  .notes textarea{width:100%;min-height:90px;font:16px/1.5 Georgia,serif;padding:12px;border:1px solid var(--rule);border-radius:8px;background:#fffdf8}
+  .empty{padding:40px 20px;text-align:center;color:var(--ink-soft);font-style:italic}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:999px;font-family:-apple-system,Arial,sans-serif;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:90vw;text-align:center}
+  .toast.show{opacity:1}
+  .offline{font-family:-apple-system,Arial,sans-serif;font-size:12px;color:var(--accent2);text-align:center;margin-top:6px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><h1>Prism</h1><span class="tag">one topic, split through many lenses</span></div>
+  <div class="spectrum-bar"></div>
+</header>
+<main id="app"><div class="empty">Loading…</div></main>
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const S={manifest:null,weeks:{},selWeek:null,selDay:null};
+const CACHE_KEY='prism_mobile_cache_v1';
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function md(src){
+  if(!src)return'';
+  const lines=String(src).split(/\r?\n/);let out=[],para=[],list=null;
+  const inline=s=>esc(s).replace(/\*\*([^*]+)\*\*/g,'<b>$1</b>').replace(/\*([^*]+)\*/g,'<i>$1</i>');
+  const fP=()=>{if(para.length){out.push('<p>'+para.join(' ')+'</p>');para=[];}};
+  const fL=()=>{if(list){out.push(`<${list.t}>`+list.items.map(i=>'<li>'+i+'</li>').join('')+`</${list.t}>`);list=null;}};
+  for(const raw of lines){const l=raw.trimEnd();
+    if(!l.trim()){fP();fL();continue;}let m;
+    if((m=l.match(/^#{1,6}\s+(.*)/))){fP();fL();out.push('<h4>'+inline(m[1])+'</h4>');}
+    else if((m=l.match(/^>\s?(.*)/))){fP();fL();out.push('<blockquote>'+inline(m[1])+'</blockquote>');}
+    else if((m=l.match(/^[-*]\s+(.*)/))){fP();if(!list||list.t!=='ul'){fL();list={t:'ul',items:[]};}list.items.push(inline(m[1]));}
+    else if((m=l.match(/^\d+[.)]\s+(.*)/))){fP();if(!list||list.t!=='ol'){fL();list={t:'ol',items:[]};}list.items.push(inline(m[1]));}
+    else{fL();para.push(inline(l));}}
+  fP();fL();return out.join('\n');
+}
+async function tryFetch(p){try{const r=await fetch(p,{cache:'no-store'});if(!r.ok)return null;return await r.json();}catch(e){return null;}}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function daysBetween(a,b){return Math.round((new Date(b+'T00:00:00')-new Date(a+'T00:00:00'))/86400000);}
+async function load(){
+  const man=await tryFetch('data/manifest.json');
+  if(man){
+    S.manifest=man;
+    for(const w of man.weeks||[]){const j=await tryFetch('data/'+w);if(j)S.weeks[w]=j;}
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({t:Date.now(),manifest:S.manifest,weeks:S.weeks}));}catch(e){}
+    return 'live';
+  }
+  try{const c=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+    if(c&&c.manifest){S.manifest=c.manifest;S.weeks=c.weeks||{};return 'cache';}}catch(e){}
+  return 'none';
+}
+function initSel(){
+  const files=(S.manifest.weeks||[]).filter(w=>S.weeks[w]);
+  if(!files.length)return;
+  const today=todayISO();let pick=null,day=null;
+  for(const f of files){const st=S.manifest[f.replace('.json','')+'_start'];if(!st)continue;
+    const off=daysBetween(st,today);if(off>=0&&off<7){pick=f;day=off+1;break;}}
+  if(!pick){pick=files[files.length-1];const dow=new Date().getDay();day=dow===0?7:dow;}
+  S.selWeek=pick;S.selDay=Math.min(Math.max(day,1),(S.weeks[pick].days||[]).length||1);
+}
+const LENS={historical:'Historical','cross-cultural':'Cross-cultural',scientific:'Scientific / speculative','other-author':'Other authors',philosophical:'Philosophical',sensory:'Sensory'};
+function render(offline){
+  const el=document.getElementById('app');
+  const wk=S.weeks[S.selWeek];
+  if(!wk){el.innerHTML='<div class="empty">No week available yet. Check back after Monday’s run.</div>';return;}
+  const st=S.manifest[S.selWeek.replace('.json','')+'_start'];
+  const todayIdx=st?daysBetween(st,todayISO())+1:-1;
+  const day=(wk.days||[]).find(d=>d.day===S.selDay)||wk.days[0];
+  let h='';
+  h+=`<h2 class="week-theme">${esc(wk.theme)} <span class="vein-badge">${esc(wk.vein)}</span></h2>`;
+  h+=`<div class="muted small sans">Week ${esc(wk.week)}${st?' · began '+esc(st):''}</div>`;
+  if(offline)h+=`<div class="offline">offline — showing your last synced copy</div>`;
+  h+=`<p class="framing">${esc(wk.framing||'')}</p>`;
+  h+=`<div class="day-strip">`+(wk.days||[]).map(d=>
+    `<button class="${d.day===S.selDay?'sel':''} ${d.day===todayIdx?'today':''}" onclick="selDay(${d.day})">Day ${d.day}${d.day===todayIdx?' · today':''}</button>`).join('')+`</div>`;
+  if(day){
+    h+=`<div class="section-label">Spark</div><div class="spark">${esc(day.spark||'')}</div>`;
+    h+=`<div class="section-label">Depth</div>`;
+    for(const it of (day.depth||[])){
+      if(it.type==='sourced_work'){
+        h+=`<div class="quoted"><span class="badge sourced">Sourced work — real, attributed</span>${it.form?` <span class="badge type">${esc(it.form)}</span>`:''}
+            <div class="qtext">${esc(it.text||'')}</div>
+            <div class="attr"><span class="who">— ${esc(it.author||'')}</span>${it.work?`, <i>${esc(it.work)}</i>`:''}</div></div>`;
+      }else{
+        h+=`<div class="depth-item"><span class="badge ai">Prism-written · analysis</span> <span class="badge type">${esc(it.type||'piece')}</span>
+            ${it.title?`<h3>${esc(it.title)}</h3>`:''}<div class="body">${md(it.body||'')}</div></div>`;
+      }
+    }
+    if(day.refraction)h+=`<div class="section-label">Refraction</div><div class="refraction"><span class="badge lens-badge">${esc(LENS[day.refraction.lens]||day.refraction.lens||'')}</span><div class="body" style="margin-top:10px">${md(day.refraction.body||'')}</div></div>`;
+    if(day.activity){
+      const ak=`prism_act_w${wk.week}_d${day.day}`;
+      h+=`<div class="section-label">Activity</div><div class="activity"><span class="badge mode">${esc(day.activity.mode||'')}</span>
+          <div class="prompt body">${md(day.activity.prompt||'')}</div>
+          <div class="pill-note">A door left ajar — yours to walk through.</div>
+          <div class="act-response"><b class="small sans" style="color:var(--good)">Your response</b>
+          <textarea id="actresp" placeholder="Walk through the door here…">${esc(localStorage.getItem(ak)||'')}</textarea>
+          <div class="bar"><button class="btn primary" onclick="shareResponse()">Share / export</button>
+          <span class="stat">autosaves on this phone; export sends it to your notes, email, or files</span></div></div></div>`;
+    }
+    if(day.closing_quote){const q=day.closing_quote;
+      h+=`<div class="section-label">Closing quote</div><div class="quoted"><span class="badge sourced">Real quote — attributed</span>
+          <div class="qtext">${esc(q.text||'')}</div>
+          <div class="attr"><span class="who">— ${esc(q.author||'')}</span>${q.work?`, <i>${esc(q.work)}</i>`:''}</div></div>`;}
+    const nk=`prism_notes_w${wk.week}_d${day.day}`;
+    h+=`<div class="notes"><div class="section-label" style="color:var(--accent2)">Your notes — day ${day.day}</div>
+        <textarea id="daynotes" placeholder="Anything this day shook loose… (saved on this phone)">${esc(localStorage.getItem(nk)||'')}</textarea></div>`;
+  }
+  el.innerHTML=h;
+  const wire=(id,key)=>{const ta=document.getElementById(id);if(!ta)return;let t;
+    ta.addEventListener('input',()=>{clearTimeout(t);t=setTimeout(()=>localStorage.setItem(key,ta.value),400);});};
+  wire('actresp',`prism_act_w${wk.week}_d${day.day}`);
+  wire('daynotes',`prism_notes_w${wk.week}_d${day.day}`);
+}
+function selDay(d){S.selDay=d;render(window._offline);window.scrollTo({top:0,behavior:'smooth'});}
+async function shareResponse(){
+  const wk=S.weeks[S.selWeek];const day=(wk.days||[]).find(d=>d.day===S.selDay)||wk.days[0];
+  const ta=document.getElementById('actresp');const text=(ta?ta.value:'').trim();
+  if(!text){toast('Nothing to share yet');return;}
+  const body=`Prism activity response — Week ${wk.week}, Day ${day.day}\nTheme: ${wk.theme}\nActivity (${day.activity.mode}): ${day.activity.prompt}\n\n---\n\n${text}\n`;
+  const fname=`week_${String(wk.week).padStart(2,'0')}_day_${day.day}.md`;
+  if(navigator.share){
+    try{
+      const file=new File([body],fname,{type:'text/markdown'});
+      if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:fname});
+      else await navigator.share({title:fname,text:body});
+      return;
+    }catch(e){if(e.name==='AbortError')return;}
+  }
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([body],{type:'text/markdown'}));a.download=fname;a.click();
+  toast('Downloaded '+fname);
+}
+(async function(){
+  const src=await load();
+  window._offline=(src!=='live');
+  if(src==='none'){document.getElementById('app').innerHTML='<div class="empty">Couldn’t reach Prism’s data and nothing is cached yet. Open once with a connection.</div>';return;}
+  initSel();render(window._offline);
+})();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
