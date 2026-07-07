@@ -40,6 +40,8 @@
   .section-label{font-family:-apple-system,Arial,sans-serif;font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin:30px 0 10px;display:flex;align-items:center;gap:10px}
   .section-label::after{content:"";flex:1;height:1px;background:var(--rule)}
   .spark{font-size:20px;line-height:1.5;font-style:italic;margin:6px 0}
+  .day-headline{font-family:-apple-system,Arial,sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--parchment);border:1px solid var(--parchment-edge);border-radius:8px;padding:9px 14px;margin:16px 0 2px}
+  .depth-item .subtitle{font-family:-apple-system,Arial,sans-serif;font-size:12.5px;color:var(--ink-soft);margin:-2px 0 10px}
   .depth-item{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;margin-bottom:14px;background:var(--card)}
   .depth-item h3{font-size:18px;font-weight:normal;margin:6px 0 8px}
   .body p{margin:0 0 12px} .body ul,.body ol{margin:0 0 12px 20px} .body h4{margin:14px 0 6px}
@@ -138,6 +140,7 @@ function render(offline){
   h+=`<div class="day-strip">`+(wk.days||[]).map(d=>
     `<button class="${d.day===S.selDay?'sel':''} ${d.day===todayIdx?'today':''}" onclick="selDay(${d.day})">Day ${d.day}${d.day===todayIdx?' · today':''}</button>`).join('')+`</div>`;
   if(day){
+    if(day.headline)h+=`<div class="day-headline">${esc(day.headline)}</div>`;
     h+=`<div class="section-label">Spark</div><div class="spark">${esc(day.spark||'')}</div>`;
     h+=`<div class="section-label">Depth</div>`;
     for(const it of (day.depth||[])){
@@ -147,7 +150,9 @@ function render(offline){
             <div class="attr"><span class="who">— ${esc(it.author||'')}</span>${it.work?`, <i>${esc(it.work)}</i>`:''}</div></div>`;
       }else{
         h+=`<div class="depth-item"><span class="badge ai">Prism-written · analysis</span> <span class="badge type">${esc(it.type||'piece')}</span>
-            ${it.title?`<h3>${esc(it.title)}</h3>`:''}<div class="body">${md(it.body||'')}</div></div>`;
+            ${it.title?`<h3>${esc(it.title)}</h3>`:''}
+            ${it.subtitle?`<div class="subtitle">${esc(it.subtitle)}</div>`:''}
+            <div class="body">${md(it.body||'')}</div></div>`;
       }
     }
     if(day.refraction)h+=`<div class="section-label">Refraction</div><div class="refraction"><span class="badge lens-badge">${esc(LENS[day.refraction.lens]||day.refraction.lens||'')}</span><div class="body" style="margin-top:10px">${md(day.refraction.body||'')}</div></div>`;
