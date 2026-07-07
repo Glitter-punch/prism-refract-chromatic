@@ -42,6 +42,7 @@
   .spark{font-size:20px;line-height:1.5;font-style:italic;margin:6px 0}
   .day-headline{font-family:-apple-system,Arial,sans-serif;font-size:14px;font-weight:600;color:var(--ink);background:var(--parchment);border:1px solid var(--parchment-edge);border-radius:8px;padding:9px 14px;margin:16px 0 2px}
   .depth-item .subtitle{font-family:-apple-system,Arial,sans-serif;font-size:12.5px;color:var(--ink-soft);margin:-2px 0 10px}
+  .src-line{font-size:11.5px;color:#8a7a55;margin-top:10px;padding-top:8px;border-top:1px dashed var(--rule)}
   .depth-item{border:1px solid var(--rule);border-radius:10px;padding:16px 18px;margin-bottom:14px;background:var(--card)}
   .depth-item h3{font-size:18px;font-weight:normal;margin:6px 0 8px}
   .body p{margin:0 0 12px} .body ul,.body ol{margin:0 0 12px 20px} .body h4{margin:14px 0 6px}
@@ -152,10 +153,11 @@ function render(offline){
         h+=`<div class="depth-item"><span class="badge ai">Prism-written · analysis</span> <span class="badge type">${esc(it.type||'piece')}</span>
             ${it.title?`<h3>${esc(it.title)}</h3>`:''}
             ${it.subtitle?`<div class="subtitle">${esc(it.subtitle)}</div>`:''}
-            <div class="body">${md(it.body||'')}</div></div>`;
+            <div class="body">${md(it.body||'')}</div>
+            ${it.source?`<div class="src-line sans">Distilled from: ${esc(it.source)}</div>`:''}</div>`;
       }
     }
-    if(day.refraction)h+=`<div class="section-label">Refraction</div><div class="refraction"><span class="badge lens-badge">${esc(LENS[day.refraction.lens]||day.refraction.lens||'')}</span><div class="body" style="margin-top:10px">${md(day.refraction.body||'')}</div></div>`;
+    if(day.refraction)h+=`<div class="section-label">Refraction</div><div class="refraction"><span class="badge lens-badge">${esc(LENS[day.refraction.lens]||day.refraction.lens||'')}</span><div class="body" style="margin-top:10px">${md(day.refraction.body||'')}</div>${day.refraction.source?`<div class="src-line sans">Distilled from: ${esc(day.refraction.source)}</div>`:''}</div>`;
     if(day.activity){
       const ak=`prism_act_w${wk.week}_d${day.day}`;
       h+=`<div class="section-label">Activity</div><div class="activity"><span class="badge mode">${esc(day.activity.mode||'')}</span>
